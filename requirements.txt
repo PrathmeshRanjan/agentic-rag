@@ -10,3 +10,10 @@ langchain-tavily
 pinecone
 beautifulsoup4
 python-dotenv
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+pydantic-settings
+pypdf
+python-docx
