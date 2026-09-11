@@ -6,7 +6,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone, ServerlessSpec
 
-INDEX_NAME = "industry-agentic-rag-kb"
+INDEX_NAME = "hr-agentic-rag-kb"
 NAMESPACE = "agentic-rag"
 EMBEDDING_MODEL = "gemini-embedding-001"
 EMBEDDING_DIMENSION = 3072
