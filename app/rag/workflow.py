@@ -14,8 +14,11 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 MAX_RETRIES = 1
+PRIMARY_MODEL = "mistralai:mistral-small-latest"
+FALLBACK_MODEL = "google_genai:gemini-2.5-flash"
 
 _llm = None
+_fallback_llm = None
 _web_search = None
 
 
@@ -24,8 +27,51 @@ def llm():
     if _llm is None:
         if not os.getenv("MISTRAL_API_KEY"):
             raise RuntimeError("MISTRAL_API_KEY is missing")
-        _llm = init_chat_model("mistralai:mistral-small-latest")
+        _llm = init_chat_model(PRIMARY_MODEL)
     return _llm
+
+
+def fallback_llm():
+    global _fallback_llm
+    if _fallback_llm is None:
+        if not os.getenv("GOOGLE_API_KEY"):
+            raise RuntimeError("GOOGLE_API_KEY is missing for the Gemini fallback")
+        _fallback_llm = init_chat_model(FALLBACK_MODEL)
+    return _fallback_llm
+
+
+def is_rate_limit_error(error: Exception) -> bool:
+    status_code = getattr(error, "status_code", None)
+    response = getattr(error, "response", None)
+    response_status = getattr(response, "status_code", None)
+    message = str(error).lower()
+    return (
+        status_code == 429
+        or response_status == 429
+        or "rate limit" in message
+        or "rate_limit" in message
+        or "too many requests" in message
+        or "quota" in message
+        or "429" in message
+    )
+
+
+def invoke_llm(prompt: str, output_schema: Any = None):
+    primary = llm()
+    fallback = None
+    if output_schema is not None:
+        primary = primary.with_structured_output(output_schema, method="json_mode")
+
+    try:
+        return primary.invoke(prompt)
+    except Exception as error:
+        if not is_rate_limit_error(error):
+            raise
+        logger.warning("Mistral rate limit reached; falling back to Gemini 2.5 Flash")
+        fallback = fallback_llm()
+        if output_schema is not None:
+            fallback = fallback.with_structured_output(output_schema, method="json_mode")
+        return fallback.invoke(prompt)
 
 
 def web_search_tool():
@@ -53,15 +99,14 @@ def structured_value(result: Any, field: str) -> str:
 
 
 def route_question(state: AgentState):
-    router = llm().with_structured_output(RouteDecision, method="json_mode")
-    decision = router.invoke(f"""
+    decision = invoke_llm(f"""
 You route messages for an enterprise HR policy and employee support assistant.
 Use kb for questions about company HR policies, leave, holidays, benefits, payroll,
 remote work, attendance, onboarding, performance, expenses, travel, conduct, or employee support.
 Use direct only for greetings, thanks, or casual chat that needs no company knowledge.
 Question: {state['question']}
 Return valid JSON like {{"route":"kb"}}.
-""")
+""", RouteDecision)
     route = structured_value(decision, "route")
     return {"source_used": route, "trace": add_trace(state, f"Router -> {route.upper()}")}
 
@@ -76,16 +121,15 @@ def retrieve_kb(state: AgentState):
 
 
 def grade_kb(state: AgentState):
-    grader = llm().with_structured_output(EvidenceGrade, method="json_mode")
     context = "\n\n".join(f"Source: {d.metadata.get('source','unknown')}\n{d.page_content}" for d in state["kb_docs"])
-    grade = grader.invoke(f"""
+    grade = invoke_llm(f"""
 You grade evidence for an enterprise HR policy and employee support assistant.
 Question: {state['question']}
 
 Private company HR KB evidence:\n{context}
 Return good only if the evidence is sufficient to answer confidently and specifically.
 Otherwise return weak. JSON: {{"grade":"good"}} or {{"grade":"weak"}}.
-""")
+""", EvidenceGrade)
     grade_value = structured_value(grade, "grade")
     return {"kb_grade": grade_value, "trace": add_trace(state, f"KB evidence grade -> {grade_value.upper()}")}
 
@@ -115,13 +159,12 @@ def search_web(state: AgentState):
 
 
 def grade_web(state: AgentState):
-    grader = llm().with_structured_output(EvidenceGrade, method="json_mode")
-    grade = grader.invoke(f"""
+    grade = invoke_llm(f"""
 Question: {state['question']}
 Web evidence:\n{state['web_results']}
 Return good if the evidence is sufficient and directly relevant; otherwise weak.
 Return valid JSON like {{"grade":"good"}}.
-""")
+""", EvidenceGrade)
     grade_value = structured_value(grade, "grade")
     return {"web_grade": grade_value, "trace": add_trace(state, f"Web evidence grade -> {grade_value.upper()}")}
 
@@ -135,7 +178,7 @@ def after_web(state: AgentState) -> Literal["generate_from_web", "rewrite_query"
 
 
 def rewrite_query(state: AgentState):
-    response = llm().invoke(f"""
+    response = invoke_llm(f"""
 Rewrite this HR/employee-support question for better private knowledge retrieval and public web search.
 Preserve intent, add useful HR/policy keywords, do not answer, return only the query.
 Question: {state['question']}
@@ -151,7 +194,7 @@ Question: {state['question']}
 
 def generate_from_kb(state: AgentState):
     context = "\n\n".join(f"[Source: {d.metadata.get('source','unknown')}]\n{d.page_content}" for d in state["kb_docs"])
-    answer = llm().invoke(f"""
+    answer = invoke_llm(f"""
 You are an enterprise HR policy and employee support copilot. Answer ONLY from the private company HR KB below.
 Be concise, practical, respectful, and policy-grounded. If steps are present, present them clearly.
 Do not invent policy details. Mention that the answer is based on the company's private knowledge base.
@@ -169,7 +212,7 @@ Question: {state['question']}\n\nPrivate KB:\n{context}
 
 
 def generate_from_web(state: AgentState):
-    answer = llm().invoke(f"""
+    answer = invoke_llm(f"""
 You are an enterprise HR policy and employee support copilot. The private company HR KB was insufficient.
 Answer ONLY from the web evidence below. Clearly say this is external public information and may require HR validation before being treated as company policy or employment guidance.
 Question: {state['question']}\n\nWeb evidence:\n{state['web_results']}
@@ -179,7 +222,7 @@ Question: {state['question']}\n\nWeb evidence:\n{state['web_results']}
 
 
 def direct_answer(state: AgentState):
-    answer = llm().invoke(f"Respond briefly and naturally to: {state['question']}").content
+    answer = invoke_llm(f"Respond briefly and naturally to: {state['question']}").content
     return {"answer": answer, "source_used": "direct", "trace": add_trace(state, "Direct response → no retrieval")}
 
 

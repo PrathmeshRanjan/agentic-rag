@@ -10,9 +10,8 @@
   <div class="shell">
     <aside class="sidebar">
       <div>
-        <div class="brand-badge">AGENTIC HR</div>
-        <h1>Agentic HR<br/>Chatbot</h1>
-        <p class="muted">Private company HR knowledge first. External web only when evidence is weak.</p>
+        <h1>HR Policy<br/>Agentic RAG</h1>
+        <p class="muted">A demo of Agentic RAG implemented in the backend for grounded HR policy answers.</p>
       </div>
       <div class="workflow-card">
         <h3>LangGraph Workflow</h3>
@@ -30,7 +29,7 @@
       <header class="topbar">
         <div>
           <span class="status-dot"></span>
-          <span>Employee Knowledge Copilot</span>
+          <span>HR Policy Agentic RAG</span>
         </div>
         <span class="pill">Agentic RAG</span>
       </header>
@@ -41,6 +40,10 @@
             <strong>How can I help with HR policies or employee support?</strong>
             <p>Try: “How many annual leave days do employees receive?” or ask something that may require current external employment information.</p>
           </div>
+        </div>
+        <div id="loadingIndicator" class="loading-indicator hidden" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Generating a grounded answer...</span>
         </div>
       </section>
       <section class="composer-wrap">

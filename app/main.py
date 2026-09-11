@@ -19,7 +19,7 @@ load_dotenv()
 configure_logging()
 init_db()
 
-APP_NAME = os.getenv("APP_NAME", "Agentic HR Chatbot")
+APP_NAME = os.getenv("APP_NAME", "HR Policy Agentic RAG")
 
 app = FastAPI(title=APP_NAME, version="1.0.0")
 app.include_router(router)

@@ -3,6 +3,13 @@ const form = document.getElementById("chatForm");
 const question = document.getElementById("question");
 const trace = document.getElementById("trace");
 const sourceUsed = document.getElementById("sourceUsed");
+const loadingIndicator = document.getElementById("loadingIndicator");
+
+function setLoading(isLoading, text = "Generating a grounded answer...") {
+    loadingIndicator.querySelector("span:last-child").textContent = text;
+    loadingIndicator.classList.toggle("hidden", !isLoading);
+}
+
 function escapeHtml(s = "") {
     return s.replace(
         /[&<>'"]/g,
@@ -43,6 +50,7 @@ async function askAgent(q) {
     sourceUsed.textContent = "Running";
     const btn = form.querySelector("button");
     btn.disabled = true;
+    setLoading(true);
     try {
         const res = await fetch("/api/chat", {
             method: "POST",
@@ -65,6 +73,7 @@ async function askAgent(q) {
         sourceUsed.textContent = "Error";
     } finally {
         btn.disabled = false;
+        setLoading(false);
     }
 }
 form.addEventListener("submit", (e) => {
@@ -91,6 +100,9 @@ document.getElementById("uploadBtn").onclick = async () => {
         return;
     }
     status.textContent = "Indexing document...";
+    const uploadBtn = document.getElementById("uploadBtn");
+    uploadBtn.disabled = true;
+    setLoading(true, "Indexing document...");
     const fd = new FormData();
     fd.append("file", file);
     try {
@@ -104,5 +116,8 @@ document.getElementById("uploadBtn").onclick = async () => {
         status.textContent = `Indexed ${d.file}: ${d.chunks} chunks.`;
     } catch (e) {
         status.textContent = `Error: ${e.message}`;
+    } finally {
+        uploadBtn.disabled = false;
+        setLoading(false);
     }
 };
