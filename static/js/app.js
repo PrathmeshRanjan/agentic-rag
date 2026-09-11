@@ -24,7 +24,9 @@ function escapeHtml(s = "") {
     );
 }
 function formatText(s = "") {
-    return escapeHtml(s).replace(/\n/g, "<br>");
+    return escapeHtml(s)
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
 }
 function addMessage(role, text, source = "", citations = []) {
     const wrap = document.createElement("div");
