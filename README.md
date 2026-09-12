@@ -1,9 +1,8 @@
 # Agentic RAG — HR Document QA
 
-A production-oriented Retrieval-Augmented Generation system built with FastAPI,
-LangGraph, LangChain, Pinecone, Gemini/Mistral generation, and Tavily web fallback.
-Alongside the application, this repository includes a reproducible retrieval evaluation
-harness used to select chunking and reranking configurations from measured outcomes.
+An HR policy question-answering system built with FastAPI, LangGraph, LangChain,
+Pinecone, Gemini/Mistral, and Tavily. The `rag_eval` package measures retrieval across
+chunking and reranking configurations before one is selected for the application.
 
 <!-- RAG_EVAL_RESULTS_START -->
 ## Key findings
@@ -27,12 +26,12 @@ Ranked by MRR@5, then Evidence Recall@5, Hit@5, and p95 latency.
 [View the complete 18-configuration report](rag_eval/data/benchmark_report.md).
 <!-- RAG_EVAL_RESULTS_END -->
 
-## Why this is agentic RAG
+## System architecture
 
-A conventional RAG pipeline always retrieves context and immediately asks a model to
-answer. This application instead uses a stateful decision graph: it chooses a route,
-grades the available evidence, changes strategy when evidence is weak, and stops rather
-than inventing an unsupported answer.
+The request moves through a stateful decision graph. The graph selects a route, checks
+the retrieved evidence, falls back to another source when needed, retries once with a
+rewritten query, and returns an insufficient-evidence response when neither source is
+usable.
 
 ```mermaid
 flowchart TD
@@ -62,7 +61,7 @@ flowchart TD
 | LangGraph workflow | Maintains state and controls routing, grading, fallback, retry, and termination |
 | LLM router | Sends HR/policy questions to retrieval and simple conversation to a direct response |
 | Pinecone retriever | Searches the private HR knowledge base using Gemini embeddings |
-| Evidence graders | Decide whether private or web evidence is specific enough to answer safely |
+| Evidence graders | Decide whether private or web evidence is specific enough to support an answer |
 | Tavily fallback | Retrieves public information only when private KB evidence is insufficient |
 | Query rewriter | Reformulates weak searches once before the workflow stops |
 | Grounded generators | Answer from the selected evidence source and expose provenance |
@@ -96,7 +95,7 @@ The shared candidate pool is the key isolation control: differences between pair
 come from reranking rather than a second embedding call, network variance, or a changed
 retrieval result. Query failures remain in the denominator as zero-result evaluations.
 
-### Golden dataset
+### Ground-truth dataset
 
 `rag_eval/data/eval_dataset.json` contains:
 
@@ -117,7 +116,7 @@ duplicate IDs, stale snapshots, and incomplete labels.
 Chunk sizes and overlaps are character counts. Nine chunking configurations are paired
 with baseline and reranker arms, producing 18 measured retrieval configurations.
 
-| Strategy | Chunk size | Overlap | Experimental purpose |
+| Strategy | Chunk size | Overlap | Role in the comparison |
 |---|---:|---:|---|
 | Fixed | 256 | 0 | Small independent windows |
 | Fixed | 256 | 64 | Small windows with 25% overlap |
@@ -228,14 +227,14 @@ python -m rag_eval.prepare_data
 python -m rag_eval.benchmark --validate-only
 ```
 
-Run the credential-free smoke path. Hash embeddings test the entire execution path but
-are deliberately ineligible for published quality claims:
+Run the credential-free smoke path. Hash embeddings test the execution path, but their
+scores cannot be published to the README:
 
 ```bash
 python -m rag_eval.benchmark --quick
 ```
 
-Run the complete privacy-preserving benchmark and publish the ranked results:
+Run the full local benchmark and publish the ranked results:
 
 ```bash
 python -m rag_eval.benchmark \
@@ -244,7 +243,8 @@ python -m rag_eval.benchmark \
 python -m rag_eval.generate_report --update-readme
 ```
 
-Google embeddings remain available for an explicitly authorized production-parity run:
+Google embeddings are also supported when sending document text to the configured API
+is acceptable:
 
 ```bash
 python -m rag_eval.benchmark
@@ -265,7 +265,7 @@ python -m rag_eval.benchmark --no-fail-fast
 
 The README publisher refuses partial, smoke, single-arm, or failed runs. Publication
 requires all 40 questions, every registered chunking configuration, both reranker arms,
-production-quality embeddings, and zero failures.
+non-hash embeddings, and zero failures.
 
 ## Tests
 
