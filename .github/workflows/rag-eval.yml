@@ -1,0 +1,26 @@
+name: RAG evaluation integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install locked application dependencies
+        run: uv sync --frozen
+      - name: Run evaluation unit and integration tests
+        run: uv run --no-sync python -m unittest discover -s rag_eval/tests -v
+      - name: Validate golden passages against the corpus
+        run: uv run --no-sync python -m rag_eval.benchmark --validate-only
+      - name: Run credential-free end-to-end smoke benchmark
+        run: >-
+          uv run --no-sync python -m rag_eval.benchmark --quick
+          --output /tmp/rag-eval-smoke.json

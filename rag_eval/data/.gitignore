@@ -1,0 +1,4 @@
+# Bulky per-query diagnostics and disposable local artifacts.
+chroma_eval/
+benchmark_results*.json
+benchmark_report_smoke.md

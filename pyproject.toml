@@ -1,7 +1,7 @@
 [project]
 name = "agentic-rag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Agentic HR document QA with a production-grade RAG evaluation harness"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -25,3 +25,16 @@ dependencies = [
     "python-multipart>=0.0.32",
     "uvicorn[standard]>=0.52.4",
 ]
+
+[project.optional-dependencies]
+eval = [
+    "chromadb>=1.0.0",
+    "langchain-chroma>=1.0.0",
+    "langchain-experimental>=0.3.0",
+    "numpy>=1.26.0",
+    "sentence-transformers>=3.0.0",
+]
+
+[project.scripts]
+rag-benchmark = "rag_eval.benchmark:main"
+rag-report = "rag_eval.generate_report:main"

@@ -1,0 +1,7 @@
+# Install the application dependencies first (or use the repository-level
+# requirements.txt), then these evaluation-only packages.
+chromadb>=1.0.0
+langchain-chroma>=1.0.0
+langchain-experimental>=0.3.0
+numpy>=1.26.0
+sentence-transformers>=3.0.0

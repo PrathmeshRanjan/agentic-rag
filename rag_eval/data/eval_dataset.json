@@ -1,0 +1,316 @@
+{
+  "schema_version": 2,
+  "name": "hr_document_qa_gold_v2",
+  "description": "Human-curated retrieval set grounded verbatim in the two Markdown knowledge-base files and uploaded HR policy PDF. Compound questions contain one gold evidence record per required passage/source.",
+  "examples": [
+    {
+      "query_id": "q001",
+      "query": "How many days of paid annual leave do full-time employees receive?",
+      "reference_answer": "Full-time employees receive 20 days of paid annual leave per calendar year.",
+      "gold_evidence": [{"evidence_id": "q001_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Annual Leave", "text": "Full-time employees receive 20 days of paid annual leave per calendar year."}],
+      "difficulty": "easy", "tags": ["leave", "single-hop"]
+    },
+    {
+      "query_id": "q002",
+      "query": "What is the normal process and notice period for requesting annual leave?",
+      "reference_answer": "Submit the request through the HR portal at least 5 working days before the leave date and obtain manager approval.",
+      "gold_evidence": [{"evidence_id": "q002_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Annual Leave", "text": "Leave requests should normally be submitted through the HR portal at least 5 working days before the planned leave date. Manager approval is required."}],
+      "difficulty": "medium", "tags": ["leave", "procedure"]
+    },
+    {
+      "query_id": "q003",
+      "query": "Can unused annual leave be carried forward, and when does it expire?",
+      "reference_answer": "Up to 5 days can be carried forward and must be used by March 31 unless HR grants an exception.",
+      "gold_evidence": [{"evidence_id": "q003_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Annual Leave", "text": "Unused leave may be carried forward up to 5 days into the next calendar year and must be used by March 31 unless HR grants an exception."}],
+      "difficulty": "medium", "tags": ["leave", "date"]
+    },
+    {
+      "query_id": "q004",
+      "query": "How many paid sick days may employees take each year?",
+      "reference_answer": "Employees may take up to 10 paid sick days per calendar year.",
+      "gold_evidence": [{"evidence_id": "q004_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Sick Leave", "text": "Employees may take up to 10 paid sick days per calendar year."}],
+      "difficulty": "easy", "tags": ["leave", "single-hop"]
+    },
+    {
+      "query_id": "q005",
+      "query": "When may HR request medical documentation for sickness?",
+      "reference_answer": "HR may request it for absences longer than 2 consecutive working days.",
+      "gold_evidence": [{"evidence_id": "q005_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Sick Leave", "text": "For absences longer than 2 consecutive working days, HR may request appropriate medical documentation."}],
+      "difficulty": "easy", "tags": ["leave", "threshold"]
+    },
+    {
+      "query_id": "q006",
+      "query": "What are the conditions for eligible employees to work remotely?",
+      "reference_answer": "They may work remotely up to 2 days per week with manager approval, must be reachable during agreed hours, use approved tools, and protect confidential information.",
+      "gold_evidence": [{"evidence_id": "q006_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Remote Work Policy", "text": "Eligible employees may work remotely up to 2 days per week with manager approval. Employees must remain reachable during agreed working hours, use company-approved collaboration tools, and protect confidential information."}],
+      "difficulty": "medium", "tags": ["remote-work", "constraints"]
+    },
+    {
+      "query_id": "q007",
+      "query": "What are the standard working hours in the PeoplePrime handbook?",
+      "reference_answer": "9:00 AM to 6:00 PM, Monday through Friday, with a 1-hour meal break.",
+      "gold_evidence": [{"evidence_id": "q007_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Working Hours and Attendance", "text": "Standard working hours are 9:00 AM to 6:00 PM, Monday through Friday, with a 1-hour meal break."}],
+      "difficulty": "easy", "tags": ["attendance", "single-hop"]
+    },
+    {
+      "query_id": "q008",
+      "query": "When is monthly salary normally paid, and how soon should a payslip error be reported?",
+      "reference_answer": "Salary is normally paid on the final business day of the month, and discrepancies should be reported within 5 business days of receiving the payslip.",
+      "gold_evidence": [
+        {"evidence_id": "q008_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Payroll", "text": "Monthly salary is normally paid on the final business day of each month."},
+        {"evidence_id": "q008_e2", "source": "company_hr_handbook.md", "page": 1, "section": "Payroll", "text": "Payroll discrepancies should be reported to Payroll Support within 5 business days of receiving the payslip."}
+      ],
+      "difficulty": "medium", "tags": ["payroll", "date"]
+    },
+    {
+      "query_id": "q009",
+      "query": "Can benefits enrollment be changed outside the annual window?",
+      "reference_answer": "Only with a qualifying life event and supporting documentation.",
+      "gold_evidence": [{"evidence_id": "q009_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Benefits", "text": "Enrollment changes outside the annual enrollment window require a qualifying life event and supporting documentation."}],
+      "difficulty": "easy", "tags": ["benefits", "constraint"]
+    },
+    {
+      "query_id": "q010",
+      "query": "Where should discrimination, bullying, or harassment be reported?",
+      "reference_answer": "Report it to a manager, HR, or the confidential ethics channel.",
+      "gold_evidence": [{"evidence_id": "q010_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Code of Conduct", "text": "Discrimination, retaliation, bullying, or harassment should be reported to a manager, HR, or the confidential ethics channel."}],
+      "difficulty": "easy", "tags": ["conduct", "reporting"]
+    },
+    {
+      "query_id": "q011",
+      "query": "What must HR confirm before a new employee begins?",
+      "reference_answer": "The signed offer, identity and payroll documentation, manager assignment, start date, and required policy acknowledgements.",
+      "gold_evidence": [{"evidence_id": "q011_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "New Employee Onboarding", "text": "HR should confirm the signed offer, identity and payroll documentation, manager assignment, start date, and required policy acknowledgements before the employee begins."}],
+      "difficulty": "medium", "tags": ["onboarding", "checklist"]
+    },
+    {
+      "query_id": "q012",
+      "query": "What should a new employee receive on their first day?",
+      "reference_answer": "Access to the HR portal, benefits information, mandatory training, and the employee handbook.",
+      "gold_evidence": [{"evidence_id": "q012_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "New Employee Onboarding", "text": "On the first day, provide access to the HR portal, benefits information, mandatory training, and the employee handbook."}],
+      "difficulty": "easy", "tags": ["onboarding", "checklist"]
+    },
+    {
+      "query_id": "q013",
+      "query": "What should HR do when the leave portal is unavailable?",
+      "reference_answer": "Record the request by email, get manager approval, and update the HR system after service is restored.",
+      "gold_evidence": [{"evidence_id": "q013_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Leave Request Support", "text": "If the portal is unavailable, record the request by email and ask the manager to confirm approval. HR should update the HR system after service is restored."}],
+      "difficulty": "medium", "tags": ["leave", "procedure"]
+    },
+    {
+      "query_id": "q014",
+      "query": "What makes a payroll issue Priority 1?",
+      "reference_answer": "Multiple employees missing salary or a major payroll processing failure.",
+      "gold_evidence": [{"evidence_id": "q014_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P1: multiple employees are missing salary or there is a major payroll processing failure."}],
+      "difficulty": "easy", "tags": ["payroll", "classification"]
+    },
+    {
+      "query_id": "q015",
+      "query": "What priority applies to an incorrect tax or benefits line item?",
+      "reference_answer": "Priority 3.",
+      "gold_evidence": [{"evidence_id": "q015_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P3: incorrect allowance, deduction, tax, or benefits line item."}],
+      "difficulty": "medium", "tags": ["payroll", "classification"]
+    },
+    {
+      "query_id": "q016",
+      "query": "Where must an employee submit a home address change?",
+      "reference_answer": "Through the HR portal, with supporting documents where applicable.",
+      "gold_evidence": [{"evidence_id": "q016_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Employee Record Changes", "text": "Changes to legal name, bank details, emergency contact, or home address must be submitted through the HR portal with required supporting documents where applicable."}],
+      "difficulty": "easy", "tags": ["records", "procedure"]
+    },
+    {
+      "query_id": "q017",
+      "query": "By when should bank-detail changes be verified?",
+      "reference_answer": "Before the next payroll cutoff.",
+      "gold_evidence": [{"evidence_id": "q017_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Employee Record Changes", "text": "Bank-detail changes should be verified before the next payroll cutoff."}],
+      "difficulty": "easy", "tags": ["records", "date"]
+    },
+    {
+      "query_id": "q018",
+      "query": "What must HR confirm for a planned departure?",
+      "reference_answer": "Final working day, manager handover, asset return, benefit termination timing, final payroll inputs, and exit documentation.",
+      "gold_evidence": [{"evidence_id": "q018_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Offboarding", "text": "For a planned departure, HR should confirm the final working day, manager handover, return of company assets, benefit termination timing, final payroll inputs, and required exit documentation."}],
+      "difficulty": "hard", "tags": ["offboarding", "checklist"]
+    },
+    {
+      "query_id": "q019",
+      "query": "Who must be involved in access-removal requests for departing employees?",
+      "reference_answer": "IT and the manager must be involved, with timing based on the employee's final working day.",
+      "gold_evidence": [{"evidence_id": "q019_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Offboarding", "text": "Access-removal requests should be coordinated with IT and the manager according to the employee's final working day."}],
+      "difficulty": "medium", "tags": ["offboarding", "access"]
+    },
+    {
+      "query_id": "q020",
+      "query": "What priority is a single employee not receiving salary?",
+      "reference_answer": "Priority 2.",
+      "gold_evidence": [{"evidence_id": "q020_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P2: an individual employee has not received salary."}],
+      "difficulty": "easy", "tags": ["payroll", "classification"]
+    },
+    {
+      "query_id": "q021",
+      "query": "How many earned leaves does the Rikalp HR policy grant regular employees?",
+      "reference_answer": "18 earned leaves in a calendar year, prorated for employees who join mid-year.",
+      "gold_evidence": [{"evidence_id": "q021_e1", "source": "HR-Policy.pdf", "page": 4, "section": "Leave Policy", "text": "All regular employees are entitled for 18 Earned Leaves in a calendar year. However, if the employee has joined the organization in the middle of the calendar year, then the quantum of Earned Leaves will be pro rata basis."}],
+      "difficulty": "easy", "tags": ["pdf", "leave"]
+    },
+    {
+      "query_id": "q022",
+      "query": "How much leave is credited when a new joiner starts on or before the 10th?",
+      "reference_answer": "1.5 leaves.",
+      "gold_evidence": [{"evidence_id": "q022_e1", "source": "HR-Policy.pdf", "page": 4, "section": "Leave Policy", "text": "Employee joining/transferred before or on 10th of the month: 1.5 Leaves"}],
+      "difficulty": "medium", "tags": ["pdf", "leave", "threshold"]
+    },
+    {
+      "query_id": "q023",
+      "query": "Are paid leaves allowed during an employee's first three months?",
+      "reference_answer": "No. The policy says no paid leave is allowed for the initial three months.",
+      "gold_evidence": [{"evidence_id": "q023_e1", "source": "HR-Policy.pdf", "page": 4, "section": "Leave Policy", "text": "For Initial Three Months No Paid Leave will be allowed."}],
+      "difficulty": "easy", "tags": ["pdf", "leave", "constraint"]
+    },
+    {
+      "query_id": "q024",
+      "query": "What is the PDF policy's limit for carrying leave into the next year?",
+      "reference_answer": "The carry-forward limit is 6 leaves.",
+      "gold_evidence": [{"evidence_id": "q024_e1", "source": "HR-Policy.pdf", "page": 5, "section": "Leave Policy", "text": "We have carrying forward leaves to next year limits of 6 Leaves"}],
+      "difficulty": "medium", "tags": ["pdf", "leave"]
+    },
+    {
+      "query_id": "q025",
+      "query": "What maternity leave is available to a female employee with over one year of continuous service?",
+      "reference_answer": "26 weeks, subject to a medical certificate confirming pregnancy and the probable date of confinement.",
+      "gold_evidence": [{"evidence_id": "q025_e1", "source": "HR-Policy.pdf", "page": 6, "section": "Maternity and Paternity Leave Policy", "text": "Female Employee with over one-year continuous service shall be entitled to 26 weeks maternity leave subject to production of medical certificate being their pregnant and the probable date of confinement."}],
+      "difficulty": "medium", "tags": ["pdf", "maternity", "leave"]
+    },
+    {
+      "query_id": "q026",
+      "query": "What attire is expected from Monday to Friday under the grooming policy?",
+      "reference_answer": "Smart business formals are expected in the office or at outside business engagements.",
+      "gold_evidence": [{"evidence_id": "q026_e1", "source": "HR-Policy.pdf", "page": 13, "section": "Grooming & Dress Code Policy", "text": "Monday to Friday: When in office, or in business engagements outside office, the following attire is expected. Smart business formals, formal meeting invitations shall include dress code guidance."}],
+      "difficulty": "easy", "tags": ["pdf", "dress-code"]
+    },
+    {
+      "query_id": "q027",
+      "query": "What working days and office times does the PDF attendance policy specify?",
+      "reference_answer": "Monday through Saturday, from 9:30 AM to 6:00 PM.",
+      "gold_evidence": [{"evidence_id": "q027_e1", "source": "HR-Policy.pdf", "page": 7, "section": "Attendance", "text": "The working days of the company for all employees will be from Monday to Saturday. The timings would be as under. Days/Timings: Monday to Saturday Time In: - 9:30 am Time Out: - 6:00 pm"}],
+      "difficulty": "easy", "tags": ["pdf", "attendance"]
+    },
+    {
+      "query_id": "q028",
+      "query": "Which Saturday is an off day under the PDF attendance policy?",
+      "reference_answer": "The second Saturday of every month.",
+      "gold_evidence": [{"evidence_id": "q028_e1", "source": "HR-Policy.pdf", "page": 8, "section": "Weekly Offs", "text": "In our company, 2nd Saturday is off every month."}],
+      "difficulty": "easy", "tags": ["pdf", "attendance"]
+    },
+    {
+      "query_id": "q029",
+      "query": "What escalation path should someone use to report unethical or suspected criminal activity?",
+      "reference_answer": "Report it confidentially first to the reporting manager, then HR if unresolved, and then the Vigilance Officer.",
+      "gold_evidence": [{"evidence_id": "q029_e1", "source": "HR-Policy.pdf", "page": 11, "section": "Whistleblower Policy", "text": "Any internal or external person may report any unethical or suspected criminal activity mentioned above confidentially first of fall share with your reporting manager then share to HR Department in case of your issue not solved then share with our Vigilance Officer."}],
+      "difficulty": "hard", "tags": ["pdf", "whistleblower", "procedure"]
+    },
+    {
+      "query_id": "q030",
+      "query": "What general steps does the grievance policy list for resolving a workplace grievance?",
+      "reference_answer": "Start with an informal supervisor meeting, submit a formal grievance in writing, evaluate it, conduct a formal investigation, and reach a resolution.",
+      "gold_evidence": [{"evidence_id": "q030_e1", "source": "HR-Policy.pdf", "page": 14, "section": "Grievance Policy", "text": "a) Informal meeting with supervisor. Before filing a grievance, encourage employees to talk with their managers. b) Formal grievance in writing. c) Evaluate the grievance. d) Conduct a formal investigation. e) Resolution."}],
+      "difficulty": "hard", "tags": ["pdf", "grievance", "procedure"]
+    },
+    {
+      "query_id": "q031",
+      "query": "A payslip has an incorrect allowance line. What priority is the issue and how soon must the employee report it?",
+      "reference_answer": "Treat the incorrect line item as Priority 3 and report the discrepancy to Payroll Support within 5 business days of receiving the payslip.",
+      "gold_evidence": [
+        {"evidence_id": "q031_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P3: incorrect allowance, deduction, tax, or benefits line item."},
+        {"evidence_id": "q031_e2", "source": "company_hr_handbook.md", "page": 1, "section": "Payroll", "text": "Payroll discrepancies should be reported to Payroll Support within 5 business days of receiving the payslip."}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "multi-source", "payroll"]
+    },
+    {
+      "query_id": "q032",
+      "query": "I am sick for three working days and the HR portal is unavailable. What documentation and fallback process may apply?",
+      "reference_answer": "HR may request medical documentation. Record the leave request by email, have the manager confirm approval, and update the HR system when service returns.",
+      "gold_evidence": [
+        {"evidence_id": "q032_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Sick Leave", "text": "For absences longer than 2 consecutive working days, HR may request appropriate medical documentation."},
+        {"evidence_id": "q032_e2", "source": "hr_operations_runbook.md", "page": 1, "section": "Leave Request Support", "text": "If the portal is unavailable, record the request by email and ask the manager to confirm approval. HR should update the HR system after service is restored."}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "multi-source", "leave"]
+    },
+    {
+      "query_id": "q033",
+      "query": "After giving a new hire the handbook on day one, what standard schedule does that handbook state?",
+      "reference_answer": "Day-one materials include the handbook; its standard schedule is 9:00 AM to 6:00 PM, Monday through Friday, with a one-hour meal break.",
+      "gold_evidence": [
+        {"evidence_id": "q033_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "New Employee Onboarding", "text": "On the first day, provide access to the HR portal, benefits information, mandatory training, and the employee handbook."},
+        {"evidence_id": "q033_e2", "source": "company_hr_handbook.md", "page": 1, "section": "Working Hours and Attendance", "text": "Standard working hours are 9:00 AM to 6:00 PM, Monday through Friday, with a 1-hour meal break."}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "multi-source", "onboarding"]
+    },
+    {
+      "query_id": "q034",
+      "query": "Where does an employee update an emergency contact, and what protection applies if they raise a concern in good faith?",
+      "reference_answer": "Submit the record change through the HR portal with supporting documents where applicable. Retaliation for a good-faith concern is prohibited.",
+      "gold_evidence": [
+        {"evidence_id": "q034_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Employee Record Changes", "text": "Changes to legal name, bank details, emergency contact, or home address must be submitted through the HR portal with required supporting documents where applicable."},
+        {"evidence_id": "q034_e2", "source": "company_hr_handbook.md", "page": 1, "section": "Code of Conduct", "text": "Retaliation against employees who raise concerns in good faith is prohibited."}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "multi-source", "records", "conduct"]
+    },
+    {
+      "query_id": "q035",
+      "query": "How do the handbook and the uploaded PDF differ on annual earned leave and carry-forward limits?",
+      "reference_answer": "The handbook grants 20 days and allows up to 5 days to carry forward; the PDF grants 18 earned leaves and states a carry-forward limit of 6.",
+      "gold_evidence": [
+        {"evidence_id": "q035_e1", "source": "company_hr_handbook.md", "page": 1, "section": "Annual Leave", "text": "Full-time employees receive 20 days of paid annual leave per calendar year."},
+        {"evidence_id": "q035_e2", "source": "company_hr_handbook.md", "page": 1, "section": "Annual Leave", "text": "Unused leave may be carried forward up to 5 days into the next calendar year and must be used by March 31 unless HR grants an exception."},
+        {"evidence_id": "q035_e3", "source": "HR-Policy.pdf", "page": 4, "section": "Leave Policy", "text": "All regular employees are entitled for 18 Earned Leaves in a calendar year."},
+        {"evidence_id": "q035_e4", "source": "HR-Policy.pdf", "page": 5, "section": "Leave Policy", "text": "We have carrying forward leaves to next year limits of 6 Leaves"}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "multi-source", "conflict-detection", "leave"]
+    },
+    {
+      "query_id": "q036",
+      "query": "Before recording an offline leave request, what must HR verify, and what must happen after the portal recovers?",
+      "reference_answer": "Verify the employee has an active profile and sufficient balance; after recovery, update the HR system.",
+      "gold_evidence": [
+        {"evidence_id": "q036_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Leave Request Support", "text": "If an employee cannot submit leave through the HR portal, first verify that the employee has an active profile and sufficient leave balance."},
+        {"evidence_id": "q036_e2", "source": "hr_operations_runbook.md", "page": 1, "section": "Leave Request Support", "text": "HR should update the HR system after service is restored."}
+      ],
+      "difficulty": "hard", "tags": ["multi-hop", "procedure", "leave"]
+    },
+    {
+      "query_id": "q037",
+      "query": "How does payroll severity differ when many employees miss salary versus one employee?",
+      "reference_answer": "Many employees missing salary is Priority 1; one employee missing salary is Priority 2.",
+      "gold_evidence": [
+        {"evidence_id": "q037_e1", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P1: multiple employees are missing salary or there is a major payroll processing failure."},
+        {"evidence_id": "q037_e2", "source": "hr_operations_runbook.md", "page": 1, "section": "Payroll Issue Priority", "text": "P2: an individual employee has not received salary."}
+      ],
+      "difficulty": "medium", "tags": ["multi-hop", "classification", "payroll"]
+    },
+    {
+      "query_id": "q038",
+      "query": "How must office attendance be recorded, and what can happen if an employee fails to do it?",
+      "reference_answer": "Employees must mark biometric attendance at reception in the morning and evening; failing to do so may result in being marked absent for that day.",
+      "gold_evidence": [{"evidence_id": "q038_e1", "source": "HR-Policy.pdf", "page": 8, "section": "Attendance Guidelines", "text": "All employees are required to mark their attendance on Bio Matric located in the reception area in the morning and evening as they walk in and walkout. Failure of doing so, might result into an absent marked for the employee for that particular day."}],
+      "difficulty": "medium", "tags": ["pdf", "attendance", "procedure"]
+    },
+    {
+      "query_id": "q039",
+      "query": "When can the one-hour lunch break be taken under the PDF policy?",
+      "reference_answer": "Any time between 1:00 PM and 2:00 PM on a staggered schedule.",
+      "gold_evidence": [{"evidence_id": "q039_e1", "source": "HR-Policy.pdf", "page": 8, "section": "Lunch Hours", "text": "Company allows for one hour of lunch break in the day. Such lunch break could be taken anytime between 1:00 pm and 2:00 pm on a stagg ered schedule so that an employee’s absence does not create a problem for peers or colleagues."}],
+      "difficulty": "easy", "tags": ["pdf", "attendance", "time"]
+    },
+    {
+      "query_id": "q040",
+      "query": "Which separation scenarios and operational items does the termination policy say should be covered?",
+      "reference_answer": "It covers resignation, retirement, and involuntary termination, including notice periods, exit interviews, property return, final pay, and data handling.",
+      "gold_evidence": [
+        {"evidence_id": "q040_e1", "source": "HR-Policy.pdf", "page": 7, "section": "Termination and Separation Policy", "text": "A Termination and Separation Policy is a crucial HR guideline outlining the procedures for ending an employee’s tenure, whether due to resignation, retirement, or involuntary termination."},
+        {"evidence_id": "q040_e2", "source": "HR-Policy.pdf", "page": 7, "section": "Termination and Separation Policy", "text": "This policy ensures fair, consistent, and legally compliant separations, covering aspects like notice periods, exit interviews, property returns, final pay, and data handling."}
+      ],
+      "difficulty": "medium", "tags": ["pdf", "offboarding"]
+    }
+  ]
+}

@@ -17,3 +17,4 @@ python-multipart
 pydantic-settings
 pypdf
 python-docx
+-r rag_eval/requirements.txt
